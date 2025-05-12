@@ -243,9 +243,9 @@ export default function SubjectsPage() {
           </TabsContent>
         </Tabs>
 
-        <div className="mt-8">
+        <div className="mt-8 pb-6  flex flex-col justify-around items-center">
           <h2 className="text-xl font-bold mb-6">Estadísticas Académicas</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 ">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">Promedio General</CardTitle>
