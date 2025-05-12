@@ -20,16 +20,35 @@ interface AppState {
   updateSubject: (id: number, updatedSubject: Partial<z.infer<typeof SubjectSchema>>) => void;
 }
 
+const loadFromLocalStorage = (): z.infer<typeof SubjectSchema>[] => {
+  const data = localStorage.getItem('subjects');
+  return data ? JSON.parse(data) : [];
+};
+
+const saveToLocalStorage = (subjects: z.infer<typeof SubjectSchema>[]) => {
+  localStorage.setItem('subjects', JSON.stringify(subjects));
+};
+
 export const useAppStore = create<AppState>((set) => ({
-  subjects: [],
+  subjects: loadFromLocalStorage(),
   addSubject: (subject) => {
     const validatedSubject = SubjectSchema.parse(subject);
-    set((state) => ({ subjects: [...state.subjects, validatedSubject] }));
+    set((state) => {
+      const newSubjects = [...state.subjects, validatedSubject];
+      saveToLocalStorage(newSubjects);
+      return { subjects: newSubjects };
+    });
   },
-  removeSubject: (id) => set((state) => ({ subjects: state.subjects.filter((s) => s.id !== id) })),
-  updateSubject: (id, updatedSubject) => set((state) => ({
-    subjects: state.subjects.map((s) => 
+  removeSubject: (id) => set((state) => {
+    const newSubjects = state.subjects.filter((s) => s.id !== id);
+    saveToLocalStorage(newSubjects);
+    return { subjects: newSubjects };
+  }),
+  updateSubject: (id, updatedSubject) => set((state) => {
+    const newSubjects = state.subjects.map((s) => 
       s.id === id ? { ...s, ...updatedSubject } : s
-    ),
-  })),
+    );
+    saveToLocalStorage(newSubjects);
+    return { subjects: newSubjects };
+  }),
 }));
